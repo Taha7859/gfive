@@ -2,9 +2,6 @@ import { NextResponse } from "next/server";
 import { connect } from "@/dbConfig/dbConfig";
 import Order from "@/models/orderModel";
 import Stripe from "stripe";
-import fs from "fs";
-import path from "path";
-import { v4 as uuidv4 } from "uuid";
 
 connect();
 
@@ -26,22 +23,19 @@ export async function POST(req: Request) {
     const additional = formData.get("additional")?.toString();
     const referenceFile = formData.get("file") as File | null;
 
-    if (!productId || !productTitle || !productPrice || !userName || !userEmail)
-      return NextResponse.json({ success: false, message: "Missing fields" });
+    if (!productId || !productTitle || !productPrice || !userName || !userEmail) {
+      return NextResponse.json({ success: false, message: "Missing required fields" });
+    }
 
     // -----------------------------
-    // 2) Save file in TEMP folder
+    // 2) Convert file to Base64 (Vercel-compatible)
     // -----------------------------
-    let tempFilePath = "";
+    let referenceFileBase64 = "";
     if (referenceFile) {
-      const buffer = Buffer.from(await referenceFile.arrayBuffer());
-      const tempDir = path.join(process.cwd(), "temp");
-      if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir, { recursive: true });
-
-      const fileName = `${uuidv4()}-${referenceFile.name}`;
-      tempFilePath = path.join(tempDir, fileName);
-
-      await fs.promises.writeFile(tempFilePath, buffer);
+      const arrayBuffer = await referenceFile.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      const base64String = buffer.toString("base64");
+      referenceFileBase64 = `data:${referenceFile.type};base64,${base64String}`;
     }
 
     // -----------------------------
@@ -55,7 +49,7 @@ export async function POST(req: Request) {
       userEmail,
       requirement,
       additional,
-      referenceFile: tempFilePath,
+      referenceFile: referenceFileBase64, // store base64 string
       status: "pending",
     });
 
@@ -82,7 +76,6 @@ export async function POST(req: Request) {
       cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/cancel`,
     });
 
-    // Attach Stripe session ID
     newOrder.stripeSessionId = session.id;
     await newOrder.save();
 
@@ -90,13 +83,12 @@ export async function POST(req: Request) {
       success: true,
       checkoutUrl: session.url,
     });
+
   } catch (err: unknown) {
-  console.error("Checkout ERROR:", err);
+    console.error("Checkout ERROR:", err);
 
-  // safe message extraction
-  const message =
-    err instanceof Error ? err.message : "Something went wrong";
+    const message = err instanceof Error ? err.message : "Something went wrong";
 
-  return NextResponse.json({ success: false, message });
-}
+    return NextResponse.json({ success: false, message });
+  }
 }

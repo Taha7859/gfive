@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema({
-  productId: { type: String, required: true },         // Sanity id or product identifier
+  productId: { type: String, required: true },
   productTitle: { type: String, required: true },
   productPrice: { type: Number, required: true },
 
@@ -11,7 +11,7 @@ const orderSchema = new mongoose.Schema({
   requirement: { type: String, required: true },
   additional: { type: String, default: "" },
 
-  referenceFile: { type: String, default: "" }, // local path or uploaded URL
+  referenceFile: { type: String, default: "" }, // base64 string or URL
   status: { type: String, enum: ["pending","paid","cancelled"], default: "pending" },
 
   stripeSessionId: { type: String, default: "" },
