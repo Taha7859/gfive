@@ -82,7 +82,7 @@ export default function Footer() {
               <li><Link href="/services/digital-marketing" className="hover:text-white">Digital Marketing</Link></li>
               <li><Link href="/services/EcommerceVirtualAssistant" className="hover:text-white">E-Commerce (V.A)</Link></li>
               <li><Link href="/services/BusinessDataAnalytics" className="hover:text-white">Data Analytics</Link></li>
-              <li><Link href="/services/book-keeping" className="hover:text-white">BookKeeping</Link></li>
+              <li><Link href="/services/book-keeping" className="hover:text-white">Bookkeeping</Link></li>
             </ul>
           </div>
 

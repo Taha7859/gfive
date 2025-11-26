@@ -12,7 +12,7 @@ export const sendRequestEmail = async (
 
   // ✅ Email to Admin
   const adminMail = await resend.emails.send({
-    from: "onboarding@resend.dev",
+    from: "support@shpfusion.com",
     to: admin,
     subject: `New Design Request — ${productTitle}`,
     html: `
@@ -28,7 +28,7 @@ export const sendRequestEmail = async (
 
   // ✅ Email to Customer
   const customerMail = await resend.emails.send({
-    from: "onboarding@resend.dev",
+    from: "support@shpfusion.com",
     to: customerEmail,
     subject: `Your Request Has Been Received — ${productTitle}`,
     html: `

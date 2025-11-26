@@ -7,18 +7,33 @@ export async function GET() {
       success: true,
     });
 
+    // ✅ PRODUCTION-READY COOKIE CLEARING
     response.cookies.set("token", "", {
       httpOnly: true,
-      expires: new Date(0),
+      secure: process.env.NODE_ENV === "production", // ✅ HTTPS in production
+      sameSite: "lax", // ✅ CSRF protection
+      path: "/", // ✅ Clear for all paths
+      expires: new Date(0), // ✅ Immediate expiration
     });
 
+    // ✅ ADD SECURITY HEADERS
+    response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
+    response.headers.set("Pragma", "no-cache");
+
     return response;
+
   } catch (error: unknown) {
-    if (error instanceof Error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
+    console.error("❌ Logout error:", error);
+    
+    // ✅ BETTER ERROR RESPONSE
+    const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+    
     return NextResponse.json(
-      { error: "An unknown error occurred" },
+      { 
+        message: "Logout failed", 
+        error: errorMessage,
+        success: false 
+      }, 
       { status: 500 }
     );
   }

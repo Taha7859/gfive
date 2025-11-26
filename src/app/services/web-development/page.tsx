@@ -75,13 +75,13 @@ export default function PortfolioSection() {
       <div className="text-center mb-14">
         <div className="flex items-center justify-center gap-4">
           <div className="w-16 h-[2px] bg-[#0f172a]" />
-          <p className="text-[#0f172a] font-semibold uppercase tracking-wide">
-            Complete Project
+          <p className="text-[#0f172a] font-extrabold uppercase tracking-wide">
+            Completed Projects
           </p>
           <div className="w-16 h-[2px] bg-[#0f172a]" />
         </div>
         <h2 className="text-3xl md:text-5xl font-bold text-[#0f172a] mt-4 leading-tight">
-          Look At My Portfolio And Give Me Your Feedback
+          Explore Our Latest Portfolio
         </h2>
       </div>
 
