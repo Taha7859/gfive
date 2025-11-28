@@ -32,12 +32,11 @@
 
 //   return NextResponse.next();
 // }
-
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getDataFromToken } from "@/helpers/getDataFromToken";
 
-// ✅ Production level configuration
+// ✅ PRODUCTION LEVEL CONFIGURATION
 export const config = {
   matcher: [
     "/login",
@@ -45,30 +44,46 @@ export const config = {
     "/dashboard/:path*",
     "/profile/:path*",
     "/recuirment/:path*",
-    "/success/:path*", // ✅ Success page ko bhi protect karega
-    "/checkout/:path*" // ✅ Checkout page bhi protect rahe
+    "/checkout/:path*"
+    // ❌ SUCCESS PAGE REMOVE KARDO - yeh public honi chahiye
   ],
   runtime: "nodejs",
 };
 
-// ✅ Protected routes define karte hain
+// ✅ PROTECTED ROUTES (jahan login required hai)
 const PROTECTED_ROUTES = [
   "/dashboard",
   "/profile", 
   "/recuirment",
-  "/success", // ✅ Success page protected
-  "/checkout" // ✅ Checkout page protected
+  "/checkout"
+  // ❌ SUCCESS PAGE REMOVE KARDO
 ];
 
-// ✅ Public routes (jahan authenticated users ko redirect karna hai)
+// ✅ PUBLIC ROUTES (jahan authenticated users ko redirect karna hai)
 const PUBLIC_ROUTES = [
   "/login",
   "/signup"
 ];
 
+// ✅ ALWAYS PUBLIC ROUTES (kisi bhi state mein access ho saken)
+const ALWAYS_PUBLIC_ROUTES = [
+  "/success",  // ✅ Payment ke baad public honi chahiye
+  "/cancel",   // ✅ Cancel page bhi public
+  "/api"       // ✅ API routes bhi public (with proper auth in APIs)
+];
+
 export function middleware(req: NextRequest) {
   const tokenData = getDataFromToken(req);
   const { pathname } = req.nextUrl;
+
+  // ✅ Pehle check karo agar route always public hai
+  const isAlwaysPublic = ALWAYS_PUBLIC_ROUTES.some(route => 
+    pathname.startsWith(route)
+  );
+
+  if (isAlwaysPublic) {
+    return NextResponse.next(); // ✅ Direct allow karo
+  }
 
   // ✅ Current route check karte hain
   const isProtectedRoute = PROTECTED_ROUTES.some(route => 
@@ -94,12 +109,6 @@ export function middleware(req: NextRequest) {
     loginUrl.searchParams.set("redirect", pathname);
     
     return NextResponse.redirect(loginUrl);
-  }
-
-  // ✅ CASE 3: Success page specific protection
-  if (pathname.startsWith("/success") && !tokenData) {
-    console.log(`🔒 Unauthorized access to success page`);
-    return NextResponse.redirect(new URL("/login", req.url));
   }
 
   // ✅ All checks passed - allow request
