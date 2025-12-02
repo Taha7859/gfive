@@ -5,7 +5,7 @@ import {  Pencil } from "lucide-react";
 export default function GraphicButem() {
     return (
   
-      <div className="flex justify-center mt-16">
+      <div className="flex justify-center ">
         
 
 <button

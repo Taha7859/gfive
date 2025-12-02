@@ -67,7 +67,7 @@ export default function CategoriesNav() {
   };
 
   return (
-    <div className="w-full sticky top-20 bg-white/70 backdrop-blur-md z-20">
+    <div className="w-full sticky top-20 bg-gray/20 backdrop-blur-lg z-20">
       {/* ✅ Mobile Version */}
       <div className="relative md:hidden py-3">
         {/* Scrollable Categories */}

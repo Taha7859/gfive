@@ -37,8 +37,9 @@ export const sendEmail = async ({ email, emailType, userId }: SendEmailParams) =
     const link =
       emailType === "VERIFY"
         ? `${process.env.DOMAIN}/verifyemail?token=${hashedToken}`
-        : `${process.env.DOMAIN}/resetpassword?token=${hashedToken}`;
+        : `${process.env.DOMAIN}/reset-password?token=${hashedToken}`;
 
+      
     const subject =
       emailType === "VERIFY" ? "Verify your email" : "Reset your password";
 
