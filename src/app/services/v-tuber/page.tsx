@@ -46,17 +46,24 @@ export default function VtuberPage() {
         const data: VtuberItem[] = await client.fetch(query);
 
         // ✅ Add dynamic label for Premium/Standard/Basic based on index
-        const labeled = data.map((item, i) => ({
-          ...item,
-          label:
-            i === 0
-              ? `Premium ($${item.price ?? "--"})`
-              : i === 1
-              ? `Standard ($${item.price ?? "--"})`
-              : `Basic ($${item.price ?? "--"})`,
-        }));
+        const labeledData = data.map((item, index) => {
+  let label = "";
+  
+  if (index < 3) {
+    // First 3 items: Premium
+    label = `Premium ($${item.price})`;
+  } else if (index < 6) {
+    // Next 3 items: Standard
+    label = `Standard ($${item.price})`;
+  } else {
+    // Remaining items: Basic
+    label = `Basic ($${item.price})`;
+  }
+  
+  return { ...item, label };
+});
 
-        setItems(labeled);
+        setItems(labeledData);
       } catch (err) {
         console.error("❌ Error fetching Vtuber models:", err);
       } finally {

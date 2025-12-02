@@ -52,16 +52,22 @@ export default function MascotCharactersPage() {
         const data: CharacterItem[] = await client.fetch(query);
 
         // Assign labels dynamically (Premium / Standard / Basic)
-        const labeledData = data.map((item, index) => ({
-          ...item,
-          label:
-            index === 0
-              ? `Premium ($${item.price})`
-              : index === 1
-              ? `Standard ($${item.price})`
-              : `Basic ($${item.price})`,
-        }));
-
+        const labeledData = data.map((item, index) => {
+  let label = "";
+  
+  if (index < 3) {
+    // First 3 items: Premium
+    label = `Premium ($${item.price})`;
+  } else if (index < 6) {
+    // Next 3 items: Standard
+    label = `Standard ($${item.price})`;
+  } else {
+    // Remaining items: Basic
+    label = `Basic ($${item.price})`;
+  }
+  
+  return { ...item, label };
+});
         setItems(labeledData);
       } catch (error) {
         console.error("❌ Error fetching Mascot characters:", error);

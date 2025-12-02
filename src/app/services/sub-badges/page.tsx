@@ -50,17 +50,24 @@ export default function SubBadgesPage() {
         const data: GraphicItem[] = await client.fetch(query);
 
         // assign dynamic labels (Premium / Standard / Basic)
-        const labeled = data.map((item, i) => ({
-          ...item,
-          label:
-            i === 0
-              ? `Premium ($${item.price ?? "--"})`
-              : i === 1
-              ? `Standard ($${item.price ?? "--"})`
-              : `Basic ($${item.price ?? "--"})`,
-        }));
+        const labeledData = data.map((item, index) => {
+  let label = "";
+  
+  if (index < 3) {
+    // First 3 items: Premium
+    label = `Premium ($${item.price})`;
+  } else if (index < 6) {
+    // Next 3 items: Standard
+    label = `Standard ($${item.price})`;
+  } else {
+    // Remaining items: Basic
+    label = `Basic ($${item.price})`;
+  }
+  
+  return { ...item, label };
+});
 
-        setItems(labeled);
+        setItems(labeledData);
       } catch (err) {
         console.error("❌ Error fetching sub badges:", err);
       } finally {

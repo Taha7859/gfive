@@ -32,7 +32,8 @@ export default function ForgotPasswordPage() {
       } else {
         setSuccess(true);
       }
-    } catch (err) {
+    } catch {
+      // ✅ FIXED: Removed unused 'err' parameter
       setError("Network error. Please try again.");
     } finally {
       setLoading(false);
@@ -49,7 +50,8 @@ export default function ForgotPasswordPage() {
               Check Your Email
             </h2>
             <p className="text-gray-300 mb-6">
-              If an account with <strong>{email}</strong> exists, we've sent a password reset link to your email.
+              If an account with <strong>{email}</strong> exists, we&apos;ve sent a password reset link to your email.
+              {/* ✅ FIXED: Escaped apostrophe */}
             </p>
             <div className="space-y-3">
               <button
@@ -89,7 +91,8 @@ export default function ForgotPasswordPage() {
           Reset Password
         </h2>
         <p className="text-gray-400 mb-6">
-          Enter your email address and we'll send you a link to reset your password.
+          Enter your email address and we&apos;ll send you a link to reset your password.
+          {/* ✅ FIXED: Escaped apostrophe */}
         </p>
 
         {error && (

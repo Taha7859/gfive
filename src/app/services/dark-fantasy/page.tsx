@@ -14,7 +14,7 @@ type CharacterItem = {
   title: string;
   imageUrl: string;
   category: string;
-  price: string;
+  price: string; // Changed from number to string because now it contains label
 };
 
 export default function DarkFantasyPage() {
@@ -34,7 +34,7 @@ export default function DarkFantasyPage() {
     };
   }, []);
 
-  // Fetch Dark Fantasy Characters with dynamic price
+  // Fetch Dark Fantasy Characters with dynamic price AND LABELS
   useEffect(() => {
     const fetchDarkFantasy = async () => {
       setLoading(true);
@@ -47,7 +47,25 @@ export default function DarkFantasyPage() {
           price
         }`;
       const data: CharacterItem[] = await client.fetch(query);
-      setItems(data);
+      
+      // ✅ ADD LABELS HERE: Top 3 = Premium, Middle 3 = Standard, Rest = Basic
+      const labeledData = data.map((item, index) => {
+        let label = "";
+        if (index < 3) {
+          label = `Premium - $${item.price}`;
+        } else if (index < 6) {
+          label = `Standard - $${item.price}`;
+        } else {
+          label = `Basic - $${item.price}`;
+        }
+        
+        return {
+          ...item,
+          price: label // Replace price with label
+        };
+      });
+      
+      setItems(labeledData);
       setLoading(false);
     };
     fetchDarkFantasy();
@@ -91,6 +109,11 @@ export default function DarkFantasyPage() {
           ) : (
             chunkArray(items, 3).map((group, index) => (
               <div key={index} className="mb-10">
+                {/* ✅ Optional: Add category title above each group */}
+                {index === 0 && <h2 className="text-2xl font-bold text-center mb-6">Premium Dark Fantasy Characters</h2>}
+                {index === 1 && <h2 className="text-2xl font-bold text-center mb-6">Standard Dark Fantasy Characters</h2>}
+                {index === 2 && <h2 className="text-2xl font-bold text-center mb-6">Basic Dark Fantasy Characters</h2>}
+                
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                   {group.map((item) => (
                     <div
@@ -109,13 +132,12 @@ export default function DarkFantasyPage() {
                         draggable={false}
                       />
 
-                      {item.price && (
-                        <div className="absolute bottom-3 left-0 right-0 flex justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <span className="bg-black/70 text-white text-lg font-bold px-4 py-2 rounded-full">
-                            {item.price}
-                          </span>
-                        </div>
-                      )}
+                      {/* ✅ PRICE/LABEL DISPLAY - Always visible now */}
+                      <div className="absolute bottom-3 left-0 right-0 flex justify-center">
+                        <span className="bg-black/70 text-white text-lg font-bold px-4 py-2 rounded-full">
+                          {item.price}
+                        </span>
+                      </div>
                     </div>
                   ))}
                 </div>

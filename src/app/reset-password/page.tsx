@@ -48,7 +48,8 @@ export default function ResetPasswordPage() {
         } else {
           setTokenValid(true);
         }
-      } catch (err) {
+      } catch {
+        // ✅ FIXED: Removed unused 'err' parameter (Line 51)
         setError("Failed to verify reset link");
       } finally {
         setTokenLoading(false);
@@ -86,7 +87,8 @@ export default function ResetPasswordPage() {
           router.push("/login");
         }, 3000);
       }
-    } catch (err) {
+    } catch {
+      // ✅ FIXED: Removed unused 'err' parameter (Line 89)
       setError("Network error. Please try again.");
     } finally {
       setLoading(false);
