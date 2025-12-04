@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { FaSquareUpwork } from "react-icons/fa6";
-import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
+import { FaSquareUpwork,  } from "react-icons/fa6";
+import { Facebook, Instagram, Linkedin } from "lucide-react";
+import { BsTwitterX } from "react-icons/bs";
 import { useState } from "react";
 
 export default function Footer() {
@@ -154,7 +155,7 @@ export default function Footer() {
           <div className="flex space-x-6 mt-4 md:mt-0">
             <Link href="https://www.facebook.com/ShpFusionSF" className="hover:text-white"><Facebook size={20} /></Link>
             <Link href="https://www.instagram.com/shpfusion/" className="hover:text-white"><Instagram size={20} /></Link>
-            <Link href="#"><Twitter size={20} /></Link>
+            <Link href="https://x.com/ShpFusion"><BsTwitterX  size={20} /></Link>
             <Link href="#"><FaSquareUpwork size={20} /></Link>
             <Link href="#"><Linkedin size={20} /></Link>
           </div>

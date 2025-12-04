@@ -101,7 +101,7 @@ export const sendEmail = async ({ email, emailType, userId }: SendEmailParams) =
               <p class="font-semibold text-gray-800">ShpFusion Ltd.</p>
               <p class="text-gray-600 text-sm mt-1">Chadwell Heath, Essex, UK</p>
               <p class="text-gray-500 text-xs mt-4">
-                © ${new Date().getFullYear()} ShpFusion. All rights reserved.
+                © 2024 ShpFusion. All rights reserved.
               </p>
             </div>
           </div>
