@@ -87,7 +87,7 @@ export async function POST(req: Request) {
       }
     }
 
-    // ✅ Save order in DB
+    // ✅ Save order in DB with 'payment_pending' status
     const newOrder = await Order.create({
       productId,
       productTitle,
@@ -97,59 +97,19 @@ export async function POST(req: Request) {
       requirement,
       additional: additional.substring(0, 1000),
       referenceFile: referenceFileBase64,
-      status: "pending",
+      status: "payment_pending", // ✅ CHANGED: payment_pending instead of pending
       createdAt: new Date(),
     });
 
-    // ✅ Create Stripe Checkout Session
-    let session;
-    try {
-      // ✅ PROPER BASE URL HANDLING
-      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-      
-      session = await stripe.checkout.sessions.create({
-        mode: "payment",
-        payment_method_types: ["card"],
-        line_items: [
-          {
-            price_data: {
-              currency: "usd",
-              product_data: { 
-                name: productTitle,
-              },
-              unit_amount: Math.round(productPrice * 100),
-            },
-            quantity: 1,
-          },
-        ],
-        customer_email: userEmail,
-        metadata: {
-          orderId: newOrder._id.toString(),
-          userName: userName,
-          productTitle: productTitle,
-          timestamp: Date.now().toString()
-        },
-        success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}&order_id=${newOrder._id}`,
-        cancel_url: `${baseUrl}/cancel`,
-        expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
-      });
-    } catch (stripeError) {
-      await Order.findByIdAndDelete(newOrder._id);
-      console.error("Stripe session creation failed:", stripeError);
-      return NextResponse.json({ 
-        success: false, 
-        message: "Payment service temporarily unavailable" 
-      }, { status: 503 });
-    }
-
-    newOrder.stripeSessionId = session.id;
-    await newOrder.save();
-
+    // ✅ Return payment selection page URL instead of Stripe URL
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    
     return NextResponse.json({
       success: true,
-      checkoutUrl: session.url,
+      // ✅ CHANGED: checkoutUrl ki jagah paymentSelectUrl
+      paymentSelectUrl: `${baseUrl}/payment-select?orderId=${newOrder._id.toString()}`,
       orderId: newOrder._id.toString(),
-      sessionId: session.id
+      message: "Order saved successfully. Please select payment method."
     });
 
   } catch (err: unknown) {

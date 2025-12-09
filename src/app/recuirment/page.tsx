@@ -107,7 +107,7 @@ export default function RequirementForm() {
   };
 
   // -------------------------------
-  // Submit Handler
+  // Submit Handler - UPDATED
   // -------------------------------
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -133,11 +133,30 @@ export default function RequirementForm() {
         body: formData,
       });
 
-      const data: { success: boolean; checkoutUrl?: string; message?: string } =
-        await res.json();
+      // ✅ UPDATED: Now handling both paymentSelectUrl and checkoutUrl
+      const data: { 
+        success: boolean; 
+        checkoutUrl?: string; 
+        paymentSelectUrl?: string; // New field for payment selection
+        orderId?: string;
+        message?: string 
+      } = await res.json();
 
-      if (data.success && data.checkoutUrl) {
-        window.location.href = data.checkoutUrl;
+      if (data.success) {
+        // ✅ Priority: If paymentSelectUrl exists, go to payment selection page
+        if (data.paymentSelectUrl) {
+          window.location.href = data.paymentSelectUrl;
+        } 
+        // ✅ Fallback: If checkoutUrl exists (for existing flow), go directly to Stripe
+        else if (data.checkoutUrl) {
+          window.location.href = data.checkoutUrl;
+        } 
+        else {
+          setErrors((prev) => ({
+            ...prev,
+            submit: data.message || "Something went wrong.",
+          }));
+        }
       } else {
         setErrors((prev) => ({
           ...prev,
