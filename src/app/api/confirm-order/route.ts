@@ -35,8 +35,8 @@ interface EmailOptions {
   attachments?: EmailAttachment[];
 }
 
-// ✅ Helper function to convert price to number
-const getPriceAsNumber = (price: any): number => {
+// ✅ FIXED: Helper function with proper type
+const getPriceAsNumber = (price: unknown): number => {
   if (typeof price === 'number') return price;
   if (typeof price === 'string') {
     const num = parseFloat(price);
@@ -101,11 +101,12 @@ export async function GET(req: Request) {
       message: "Order data fetched successfully"
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) { // ✅ FIXED: 'any' ki jagah 'unknown' use kiya
     console.error("GET Confirm-order API Error:", error);
+    const errorMessage = error instanceof Error ? error.message : "Failed to fetch order data";
     return NextResponse.json({ 
       success: false, 
-      message: error?.message || "Failed to fetch order data" 
+      message: errorMessage 
     }, { status: 500 });
   }
 }
@@ -315,11 +316,12 @@ export async function POST(req: Request) {
       emailsSent: emailStatus
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) { // ✅ FIXED: 'any' ki jagah 'unknown' use kiya
     console.error("POST Confirm order error:", error);
+    const errorMessage = error instanceof Error ? error.message : "Order confirmation failed";
     return NextResponse.json({ 
       success: false, 
-      message: error?.message || "Order confirmation failed" 
+      message: errorMessage 
     }, { status: 500 });
   }
 }

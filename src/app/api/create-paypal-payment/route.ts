@@ -4,6 +4,16 @@ import Order from "@/models/orderModel";
 
 connect();
 
+// ✅ ADDED: Helper function to convert price to number
+const getPriceAsNumber = (price: unknown): number => {
+  if (typeof price === 'number') return price;
+  if (typeof price === 'string') {
+    const num = parseFloat(price);
+    return isNaN(num) ? 0 : num;
+  }
+  return 0;
+};
+
 export async function POST(req: Request) {
   try {
     const { orderId } = await req.json();
@@ -29,6 +39,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ 
         success: false, 
         message: "Order is already paid" 
+      }, { status: 400 });
+    }
+
+    // ✅ IMPORTANT: Convert productPrice to number
+    const productPrice = getPriceAsNumber(order.productPrice);
+    
+    // ✅ Validate price
+    if (productPrice <= 0) {
+      return NextResponse.json({ 
+        success: false, 
+        message: "Invalid product price" 
       }, { status: 400 });
     }
 
@@ -86,7 +107,8 @@ export async function POST(req: Request) {
           description: order.productTitle,
           amount: {
             currency_code: 'USD',
-            value: order.productPrice.toFixed(2),
+            // ✅ FIXED: .toFixed(2) use kiya number par
+            value: productPrice.toFixed(2),
           },
         }],
         payment_source: {

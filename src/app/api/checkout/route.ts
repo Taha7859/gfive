@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { connect } from "@/dbConfig/dbConfig";
 import Order from "@/models/orderModel";
-import Stripe from "stripe";
 
 connect();
 
@@ -11,7 +10,8 @@ if (!stripeSecretKey) {
   throw new Error("STRIPE_SECRET_KEY is required");
 }
 
-const stripe = new Stripe(stripeSecretKey);
+// ✅ CHANGED: Stripe variable ko comment kiya kyun ke abhi use nahi ho raha
+// const stripe = new Stripe(stripeSecretKey);
 
 export async function POST(req: Request) {
   try {
@@ -97,7 +97,7 @@ export async function POST(req: Request) {
       requirement,
       additional: additional.substring(0, 1000),
       referenceFile: referenceFileBase64,
-      status: "payment_pending", // ✅ CHANGED: payment_pending instead of pending
+      status: "payment_pending",
       createdAt: new Date(),
     });
 
@@ -106,7 +106,6 @@ export async function POST(req: Request) {
     
     return NextResponse.json({
       success: true,
-      // ✅ CHANGED: checkoutUrl ki jagah paymentSelectUrl
       paymentSelectUrl: `${baseUrl}/payment-select?orderId=${newOrder._id.toString()}`,
       orderId: newOrder._id.toString(),
       message: "Order saved successfully. Please select payment method."

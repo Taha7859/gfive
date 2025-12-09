@@ -8,7 +8,6 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const orderId = searchParams.get("orderId");
-    const token = searchParams.get("token");
 
     if (!orderId) {
       return NextResponse.redirect(new URL('/payment-failed', req.url));

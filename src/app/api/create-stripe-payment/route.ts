@@ -12,8 +12,8 @@ if (!stripeSecretKey) {
 
 const stripe = new Stripe(stripeSecretKey);
 
-// ✅ Helper function to convert price to number
-const getPriceAsNumber = (price: any): number => {
+// ✅ FIXED: Helper function with proper type (any -> unknown)
+const getPriceAsNumber = (price: unknown): number => {
   if (typeof price === 'number') return price;
   if (typeof price === 'string') {
     const num = parseFloat(price);
