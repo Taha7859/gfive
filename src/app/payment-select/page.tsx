@@ -274,7 +274,7 @@ export default function PaymentSelectPage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
                       <div className={`p-2 rounded-lg mr-3 ${processing === 'paypal' ? 'bg-blue-100' : 'bg-blue-50 group-hover:bg-blue-100'}`}>
-                        <FaCcPaypal  className="h-5 w-5 " />
+                        <FaCcPaypal  className="h-5 w-5 text-violet-600 " />
                       </div>
                       <div className="text-left">
                         <h4 className="font-bold text-gray-900">PayPal</h4>
